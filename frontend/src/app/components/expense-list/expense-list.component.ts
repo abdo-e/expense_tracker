@@ -44,4 +44,16 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
       // the tap in the service will trigger the refresh$ Subject.
     }
   }
+
+  getEmoji(category?: string): string {
+    const emojis: { [key: string]: string } = {
+      'Food': '🍕',
+      'Transport': '🚗',
+      'Entertainment': '🎬',
+      'Shopping': '🛍️',
+      'Health': '🏥',
+      'Uncategorized': '📦'
+    };
+    return emojis[category || 'Uncategorized'] || '💰';
+  }
 }

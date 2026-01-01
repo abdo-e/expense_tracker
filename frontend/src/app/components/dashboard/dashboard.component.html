@@ -1,86 +1,135 @@
-<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
     <!-- Budget Card -->
-    <div class="bg-indigo-700 overflow-hidden shadow rounded-lg text-white">
-        <div class="p-5">
-            <div class="flex items-center justify-between">
-                <dt class="text-sm font-medium text-indigo-100 truncate">Monthly Budget</dt>
+    <div class="glass-card relative overflow-hidden group">
+        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+            <svg class="w-16 h-16 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-sm font-medium text-slate-400 uppercase tracking-widest">Monthly Limit</span>
                 <button (click)="toggleEditBudget()"
-                    class="text-xs bg-indigo-500 hover:bg-indigo-400 px-2 py-1 rounded transition-colors">
-                    {{ isEditingBudget ? 'Cancel' : 'Edit' }}
+                    class="text-xs text-cyan-400 hover:text-white transition-colors flex items-center">
+                    <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    {{ isEditingBudget ? 'Cancel' : 'Adjust' }}
                 </button>
             </div>
-            <dd class="mt-2">
-                <div *ngIf="!isEditingBudget" class="text-2xl font-bold">${{ budget | number:'1.2-2' }}</div>
-                <div *ngIf="isEditingBudget" class="flex mt-1">
-                    <input #budgetInput type="number" [value]="budget"
-                        class="w-full bg-indigo-600 text-white border-none rounded-l px-2 py-1 focus:ring-0 text-xl font-bold">
-                    <button (click)="saveBudget(+budgetInput.value)"
-                        class="bg-white text-indigo-700 px-3 py-1 rounded-r font-bold text-sm">Save</button>
-                </div>
-            </dd>
+            <div *ngIf="!isEditingBudget"
+                class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+                ${{ budget | number:'1.2-2' }}
+            </div>
+            <div *ngIf="isEditingBudget"
+                class="flex items-center space-x-2 animate-in fade-in slide-in-from-left-2 transition-all">
+                <input #budgetInput type="number" [value]="budget"
+                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-2xl font-bold focus:outline-none focus:border-cyan-400 transition-colors">
+                <button (click)="saveBudget(+budgetInput.value)"
+                    class="glass-btn hover:bg-cyan-500 hover:text-slate-900 border-cyan-500/30 text-cyan-400 p-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- Total Spending Card -->
-    <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <dt class="text-sm font-medium text-gray-500 truncate">Total Spending</dt>
-            <dd class="mt-1 text-2xl font-bold text-gray-900">${{ totalExpenses | number:'1.2-2' }}</dd>
+    <div class="glass-card">
+        <div class="p-6">
+            <span class="text-sm font-medium text-slate-400 uppercase tracking-widest">Utilized</span>
+            <div class="mt-4 flex items-end justify-between">
+                <div class="text-3xl font-bold text-white">${{ totalExpenses | number:'1.2-2' }}</div>
+                <div class="text-xs text-slate-500 mb-1">Total out</div>
+            </div>
         </div>
     </div>
 
     <!-- Remaining Balance Card -->
-    <div class="overflow-hidden shadow rounded-lg" [ngClass]="remainingBalance < 0 ? 'bg-red-50' : 'bg-green-50'">
-        <div class="p-5">
-            <dt class="text-sm font-medium truncate"
-                [ngClass]="remainingBalance < 0 ? 'text-red-600' : 'text-green-600'">
-                {{ remainingBalance < 0 ? 'Over Budget' : 'Remaining Balance' }} </dt>
-            <dd class="mt-1 text-2xl font-bold" [ngClass]="remainingBalance < 0 ? 'text-red-700' : 'text-green-700'">
-                ${{ remainingBalance | number:'1.2-2' }}
-            </dd>
+    <div class="glass-card relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10" [ngClass]="remainingBalance < 0 ? 'bg-red-500' : 'bg-emerald-500'">
+        </div>
+        <div class="p-6 relative z-10">
+            <span class="text-sm font-medium uppercase tracking-widest"
+                [ngClass]="remainingBalance < 0 ? 'text-red-400' : 'text-emerald-400'">
+                {{ remainingBalance < 0 ? 'Deficit' : 'Available' }} </span>
+                    <div class="mt-4 text-3xl font-bold"
+                        [ngClass]="remainingBalance < 0 ? 'text-red-500' : 'text-emerald-500'">
+                        ${{ remainingBalance | number:'1.2-2' }}
+                    </div>
         </div>
     </div>
 
-    <!-- Spending Progress Card -->
-    <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <dt class="text-sm font-medium text-gray-500 truncate">Budget Usage</dt>
-            <dd class="mt-2">
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div [ngClass]="(totalExpenses/budget) > 0.9 ? 'bg-red-600' : 'bg-indigo-600'"
-                        class="h-2.5 rounded-full transition-all duration-500"
+    <!-- Efficiency Card -->
+    <div class="glass-card">
+        <div class="p-6">
+            <span class="text-sm font-medium text-slate-400 uppercase tracking-widest">Payload</span>
+            <div class="mt-4">
+                <div class="flex items-center justify-between text-xs mb-2">
+                    <span class="text-slate-500">Utilization</span>
+                    <span [ngClass]="(totalExpenses/budget) > 0.9 ? 'text-red-400' : 'text-cyan-400'" class="font-bold">
+                        {{ (totalExpenses/budget) * 100 | number:'1.0-0' }}%
+                    </span>
+                </div>
+                <div class="w-full bg-white/5 rounded-full h-1.5 overflow-hidden border border-white/5">
+                    <div [ngClass]="(totalExpenses/budget) > 0.9 ? 'from-red-600 to-orange-500' : 'from-cyan-500 to-blue-600'"
+                        class="h-full rounded-full transition-all duration-1000 bg-gradient-to-r"
                         [style.width.%]="(totalExpenses/budget) * 100 > 100 ? 100 : (totalExpenses/budget) * 100">
                     </div>
                 </div>
-                <div class="mt-1 text-xs text-right text-gray-500">{{ (totalExpenses/budget) * 100 | number:'1.0-0' }}%
-                </div>
-            </dd>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="mt-8 bg-white shadow rounded-lg p-6">
-    <h3 class="text-lg font-medium text-gray-900 mb-6">Spending by Category</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div v-if="categorySummary.length > 0" class="space-y-6">
-            <div *ngFor="let cat of categorySummary">
-                <div class="flex items-center justify-between text-sm mb-2">
-                    <span class="font-semibold text-gray-700">{{ cat.name }}</span>
-                    <span class="text-gray-900 font-bold">${{ cat.total | number:'1.2-2' }}</span>
+<!-- Category Insight Section -->
+<div class="mt-10 glass-card p-1">
+    <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-xl font-bold text-white flex items-center">
+                <span class="w-2 h-2 bg-cyan-400 rounded-full mr-3 animate-pulse"></span>
+                Resource Allocation
+            </h3>
+            <span class="text-xs text-slate-500 uppercase tracking-widest italic">Sorted by impact</span>
+        </div>
+
+        <div *ngIf="categorySummary.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div *ngFor="let cat of categorySummary"
+                class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all group">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500/20 transition-colors">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path
+                                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                        </div>
+                        <span class="font-semibold text-slate-200">{{ cat.name }}</span>
+                    </div>
+                    <span class="text-lg font-bold text-white">${{ cat.total | number:'1.2-2' }}</span>
                 </div>
-                <div class="w-full bg-gray-100 rounded-full h-3">
-                    <div class="bg-indigo-500 h-3 rounded-full transition-all duration-500"
+                <div class="w-full bg-black/20 rounded-full h-1">
+                    <div class="bg-gradient-to-r from-cyan-400 to-purple-500 h-full rounded-full"
                         [style.width.%]="cat.percentage"></div>
                 </div>
-                <div class="mt-1 text-right text-xs text-gray-400">{{ cat.percentage | number:'1.0-1' }}% of total</div>
+                <div class="mt-3 text-xs text-slate-500 text-right">{{ cat.percentage | number:'1.0-1' }}% weight</div>
             </div>
         </div>
-        <div *ngIf="categorySummary.length === 0" class="col-span-2 text-center py-10 text-gray-400">
-            <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <p class="mt-2 text-sm">Add your first expense to see category insights.</p>
+
+        <div *ngIf="categorySummary.length === 0"
+            class="flex flex-col items-center justify-center py-20 text-slate-500">
+            <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <p class="text-lg font-medium">No telemetry data detected.</p>
+            <p class="text-sm">Log an expense to begin analysis.</p>
         </div>
     </div>
 </div>

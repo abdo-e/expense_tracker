@@ -1,37 +1,79 @@
-<div class="min-h-screen bg-gray-100">
-  <nav class="bg-indigo-600 text-white shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center">
-          <span class="text-2xl font-bold tracking-wider">ExpenseTracker</span>
+<div class="mesh-bg"></div>
+
+<div class="min-h-screen flex flex-col relative z-10">
+  <!-- Futuristic Nav -->
+  <nav class="sticky top-0 z-50 px-6 py-4">
+    <div class="max-w-7xl mx-auto glass-card border-white/5 px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div
+          class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
         </div>
-        <div class="flex items-center space-x-4">
-          <button (click)="openAddForm()" class="bg-indigo-500 hover:bg-indigo-400 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-            + Add Expense
-          </button>
-        </div>
+        <span class="text-xl font-bold tracking-tight text-white">Expense<span class="text-cyan-400">Pilot</span></span>
+      </div>
+
+      <div class="flex items-center space-x-6">
+        <button (click)="openAddForm()"
+          class="bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold px-6 py-2 rounded-xl transition-all duration-300 shadow-lg shadow-cyan-500/25 active:scale-95">
+          + New Expense
+        </button>
       </div>
     </div>
   </nav>
 
-  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-    <div class="px-4 py-6 sm:px-0">
+  <main class="flex-grow max-w-7xl w-full mx-auto px-6 py-8">
+    <!-- Dashboard Section -->
+    <section class="mb-12">
       <app-dashboard></app-dashboard>
-      
-      <div class="mt-8">
-        <app-expense-list (edit)="editExpense($event)"></app-expense-list>
-      </div>
-    </div>
+    </section>
+
+    <!-- List Section -->
+    <section class="animate-[fadeIn_0.5s_ease-out]">
+      <app-expense-list (edit)="editExpense($event)"></app-expense-list>
+    </section>
   </main>
 
-  <!-- Modal for Add/Edit Form -->
-  <div *ngIf="showForm" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" (click)="closeForm()"></div>
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+  <!-- Futuristic Footer -->
+  <footer class="py-8 text-center text-slate-500 text-sm">
+    <p>&copy; 2026 ExpensePilot. Built for the future of finance.</p>
+  </footer>
+
+  <!-- Glass Modal Overlay -->
+  <div *ngIf="showForm"
+    class="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-md bg-black/60 transition-all duration-500">
+    <div class="fixed inset-0" (click)="closeForm()"></div>
+    <div class="relative w-full max-w-xl animate-[scaleIn_0.3s_ease-out]">
+      <div class="glass-card border-white/20 p-1 overflow-hidden">
         <app-expense-form [expense]="selectedExpense" (saved)="onSaved()" (cancelled)="closeForm()"></app-expense-form>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+</style>
