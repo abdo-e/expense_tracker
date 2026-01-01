@@ -1,0 +1,50 @@
+<div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="px-4 py-5 sm:px-6 flex justify-between items-center bg-gray-50">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Expenses</h3>
+    </div>
+    <div class="border-t border-gray-200">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Amount</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr *ngFor="let expense of expenses">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ expense.title }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span
+                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                {{ expense.category?.name }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ expense.date |
+                            date:'mediumDate' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">${{ expense.amount |
+                            number:'1.2-2' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button (click)="onEdit(expense)"
+                                class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</button>
+                            <button (click)="onDelete(expense.id)"
+                                class="text-red-600 hover:text-red-900">Delete</button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="expenses.length === 0">
+                        <td colspan="5" class="px-6 py-10 text-center text-gray-500">No expenses found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

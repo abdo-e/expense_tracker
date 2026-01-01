@@ -1,0 +1,25 @@
+# Common
+node_modules/
+dist/
+tmp/
+out/
+.vscode/
+
+# .NET
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.doccache
+*.suo
+*.userprefs
+appsettings.Development.json
+
+# Angular
+.angular/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+src/assets/env.js
+src/assets/env.template.js
