@@ -1,43 +1,86 @@
-<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-    <!-- Total Card -->
-    <div class="bg-white overflow-hidden shadow rounded-lg">
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <!-- Budget Card -->
+    <div class="bg-indigo-700 overflow-hidden shadow rounded-lg text-white">
         <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
-                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Total Spending</dt>
-                        <dd>
-                            <div class="text-lg font-medium text-gray-900">${{ totalExpenses | number:'1.2-2' }}</div>
-                        </dd>
-                    </dl>
-                </div>
+            <div class="flex items-center justify-between">
+                <dt class="text-sm font-medium text-indigo-100 truncate">Monthly Budget</dt>
+                <button (click)="toggleEditBudget()"
+                    class="text-xs bg-indigo-500 hover:bg-indigo-400 px-2 py-1 rounded transition-colors">
+                    {{ isEditingBudget ? 'Cancel' : 'Edit' }}
+                </button>
             </div>
+            <dd class="mt-2">
+                <div *ngIf="!isEditingBudget" class="text-2xl font-bold">${{ budget | number:'1.2-2' }}</div>
+                <div *ngIf="isEditingBudget" class="flex mt-1">
+                    <input #budgetInput type="number" [value]="budget"
+                        class="w-full bg-indigo-600 text-white border-none rounded-l px-2 py-1 focus:ring-0 text-xl font-bold">
+                    <button (click)="saveBudget(+budgetInput.value)"
+                        class="bg-white text-indigo-700 px-3 py-1 rounded-r font-bold text-sm">Save</button>
+                </div>
+            </dd>
         </div>
     </div>
 
-    <!-- Category Breakdown -->
-    <div class="col-span-1 sm:col-span-2 bg-white shadow rounded-lg p-5">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Spending by Category</h3>
-        <div class="space-y-4">
+    <!-- Total Spending Card -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+            <dt class="text-sm font-medium text-gray-500 truncate">Total Spending</dt>
+            <dd class="mt-1 text-2xl font-bold text-gray-900">${{ totalExpenses | number:'1.2-2' }}</dd>
+        </div>
+    </div>
+
+    <!-- Remaining Balance Card -->
+    <div class="overflow-hidden shadow rounded-lg" [ngClass]="remainingBalance < 0 ? 'bg-red-50' : 'bg-green-50'">
+        <div class="p-5">
+            <dt class="text-sm font-medium truncate"
+                [ngClass]="remainingBalance < 0 ? 'text-red-600' : 'text-green-600'">
+                {{ remainingBalance < 0 ? 'Over Budget' : 'Remaining Balance' }} </dt>
+            <dd class="mt-1 text-2xl font-bold" [ngClass]="remainingBalance < 0 ? 'text-red-700' : 'text-green-700'">
+                ${{ remainingBalance | number:'1.2-2' }}
+            </dd>
+        </div>
+    </div>
+
+    <!-- Spending Progress Card -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+            <dt class="text-sm font-medium text-gray-500 truncate">Budget Usage</dt>
+            <dd class="mt-2">
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div [ngClass]="(totalExpenses/budget) > 0.9 ? 'bg-red-600' : 'bg-indigo-600'"
+                        class="h-2.5 rounded-full transition-all duration-500"
+                        [style.width.%]="(totalExpenses/budget) * 100 > 100 ? 100 : (totalExpenses/budget) * 100">
+                    </div>
+                </div>
+                <div class="mt-1 text-xs text-right text-gray-500">{{ (totalExpenses/budget) * 100 | number:'1.0-0' }}%
+                </div>
+            </dd>
+        </div>
+    </div>
+</div>
+
+<div class="mt-8 bg-white shadow rounded-lg p-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-6">Spending by Category</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div v-if="categorySummary.length > 0" class="space-y-6">
             <div *ngFor="let cat of categorySummary">
-                <div class="flex items-center justify-between text-sm mb-1">
-                    <span class="font-medium text-gray-700">{{ cat.name }}</span>
-                    <span class="text-gray-500">${{ cat.total | number:'1.2-2' }} ({{ cat.percentage | number:'1.0-0'
-                        }}%)</span>
+                <div class="flex items-center justify-between text-sm mb-2">
+                    <span class="font-semibold text-gray-700">{{ cat.name }}</span>
+                    <span class="text-gray-900 font-bold">${{ cat.total | number:'1.2-2' }}</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-indigo-600 h-2 rounded-full" [style.width.%]="cat.percentage"></div>
+                <div class="w-full bg-gray-100 rounded-full h-3">
+                    <div class="bg-indigo-500 h-3 rounded-full transition-all duration-500"
+                        [style.width.%]="cat.percentage"></div>
                 </div>
+                <div class="mt-1 text-right text-xs text-gray-400">{{ cat.percentage | number:'1.0-1' }}% of total</div>
             </div>
-            <div *ngIf="categorySummary.length === 0" class="text-center py-4 text-gray-500">
-                No data to display. Add some expenses!
-            </div>
+        </div>
+        <div *ngIf="categorySummary.length === 0" class="col-span-2 text-center py-10 text-gray-400">
+            <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p class="mt-2 text-sm">Add your first expense to see category insights.</p>
         </div>
     </div>
 </div>

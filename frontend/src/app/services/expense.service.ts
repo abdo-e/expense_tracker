@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { Expense } from '../models/expense.model';
 
 @Injectable({
@@ -8,6 +8,9 @@ import { Expense } from '../models/expense.model';
 })
 export class ExpenseService {
   private apiUrl = 'http://localhost:5028/api/expenses';
+  private refreshSubject = new Subject<void>();
+
+  refresh$ = this.refreshSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -20,14 +23,20 @@ export class ExpenseService {
   }
 
   addExpense(expense: Expense): Observable<Expense> {
-    return this.http.post<Expense>(this.apiUrl, expense);
+    return this.http.post<Expense>(this.apiUrl, expense).pipe(
+      tap(() => this.refreshSubject.next())
+    );
   }
 
   updateExpense(id: number, expense: Expense): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, expense);
+    return this.http.put(`${this.apiUrl}/${id}`, expense).pipe(
+      tap(() => this.refreshSubject.next())
+    );
   }
 
   deleteExpense(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+      tap(() => this.refreshSubject.next())
+    );
   }
 }

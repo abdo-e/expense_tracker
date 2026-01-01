@@ -22,8 +22,7 @@ export class AppComponent {
 
   onSaved() {
     this.showForm = false;
-    // Simple way to refresh data
-    window.location.reload();
+    // Data refreshes automatically via ExpenseService.refresh$
   }
 
   closeForm() {
